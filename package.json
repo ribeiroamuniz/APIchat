@@ -4,6 +4,7 @@
   "description": "api do chat feita em aula na parte dois",
   "main": "index.js",
   "scripts": {
+    "start": "node ./bin/server.js",
     "test": "teste"
   },
   "repository": {
