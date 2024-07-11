@@ -5,10 +5,10 @@ let singleton;
 async function connect(){
     if (singleton) return singleton;
 
-    const client = new MongoCliente(process.env.DB_HOST);
+    const client = new MongoClient(process.env.DB_HOST);
     await client.connect();
 
-    singleton = cliente.db(process.env.DB_DATABASE);
+    singleton = client.db(process.env.DB_DATABASE);
     return singleton;
 }
 
