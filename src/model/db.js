@@ -1,0 +1,27 @@
+const { MongoClient, ObjectId } = require("mongodb");
+
+let singleton;
+
+async function connect(){
+    if (singleton) return singleton;
+
+    const client = new MongoCliente(process.env.DB_HOST);
+    await client.connect();
+
+    singleton = cliente.db(process.env.DB_DATABASE);
+    return singleton;
+}
+
+let findAll = async (collection)=>{
+    const db = await connect();
+    return await db.collection(collection).find().toArray();
+}
+
+module.exports = {findAll}
+
+const db = require("./db");
+
+// let listarSalas = async ()=>{
+//     let salas = await db.findAll("salas");
+//     return salas;
+// }
