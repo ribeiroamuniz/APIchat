@@ -1,49 +1,58 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const salacontroller = require("./controller/salacontroller");
-
-app.use(express.urlencoded({extended:true}));
+const port = 3000;
+const userController = require('./controller/usuariocontroller');
+const salaController = require('./controller/salacontroller');
 app.use(express.json());
-
-const router = express.Router();
-
-app.use('/', router.get('/', (req, res) =>{
-    res.status(200).send("<h1> API-CHAT</h1>")
-}));
+app.use(express.urlencoded({ extended: true }));
 
 
+app.post('/entrar', (req, res) => {
+    userController.entrar(req, res);
+}); 
 
-app.use('/', router.get("/sobre", (req, res, next)=>{
-    res.status(200).send({
-        "nome": "api - chat",
-        "versao": "0.1.0",
-        "autor": "brenda Gomes"
-    })
-}))
+app.delete('/sair', (req, res) => {
+    userController.sair(req, res);
+}); 
+
+app.get('/salas', (req, res) => {
+    
+    salaController.listar(req, res);
+});
+
+app.put('/sala/sair', (req, res) => {
+    
+    salaController.sair(req, res);
+});
+
+app.put('/sala/entrar', (req, res) => {
+    
+    salaController.entrar(req, res);
+});
+
+app.post('/salas/criar', (req, res) => {
+    
+    salaController.criar(req, res);
+});
 
 
-app.use("/salas", router.get("/salas", (req, res, next)=>{
-    const salacontroller = require("./controller/salacontroller.js");
-    let resp = salacontroller.get();
-    res.status(200).send(resp);
-}))
+app.get('/sala/mensagens', (req, res) => {
+    salaController.listarmen(req, res);
+});
+
+
+app.post('/sala/mensagem', (req, res) => {
+    salaController.enviarmen(req, res);
+});
+
+
+app.get('/sobre', (req, res) => {
+    salaController.sobre(req, res);
+});
+
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}`);
+});
+
 module.exports = app;
-
-app.use("/entrar", router.post("/entrar", async(req, res, next) => {
-    const usuariocontroller = require("./controller/usuariocontroller.js");
-    let resp = await usuariocontroller.entrar(req.body.nick);
-    res.status(200).send(resp);
-}));
-
-app.use("/salas", router.get("/salas", async (req, res, next)=>{
-    if(await TokenExpiredError.checkToken(re.headers.token,req.headers.iduser,req.headers.nick)
-    ){
-       let resp = await salacontroller.get(); 
-       res.status(200).send(resp);
-    }
-    else{
-     res.status(200).send({msg: "Usuario não autorizado"});
-    }
-}))
-module.exports = app;
-

@@ -1,13 +1,18 @@
-const token = require("../util/token");
-const usuariomodel = require('../model/usuariomodel');
+const Usuario = require('../model/usuarioModel'); // Ajuste o caminho conforme necessário
 
-exports.entrar = async (nick) => {
-    let resp = await usuariomodel.registrarusuario(nick);
-    if (resp.insertedID) {
-        return {
-            "idUser": resp.insertedID,
-            "token": await token.setToken(JSON.stringify(resp.insertedID).replace(/"/g, ''), nick),
-            "nick": nick
-        };
+async function entrar(nick) {
+    try {
+        const usuario = await Usuario.findOne({ nick }).exec();
+        if (usuario) {
+            return { sucesso: true, usuario };
+        } else {
+            return { sucesso: false, mensagem: 'Usuário não encontrado' };
+        }
+    } catch (error) {
+        throw new Error(`Erro ao entrar: ${error.message}`);
     }
+}
+
+module.exports = {
+    entrar
 };

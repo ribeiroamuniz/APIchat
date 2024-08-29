@@ -1,22 +1,23 @@
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 
 let singleton;
 
 async function connect() {
     if (singleton) return singleton;
 
-    const client = new MongoClient(process.env.DB_HOST);
-    await client.connect().db(process.env.DB_DATABASE);
+    const client = new MongoClient(process.env.DB_HOST, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+
+    await client.connect();
+    singleton = client.db(process.env.DB);
     return singleton;
 }
 
-let findAll = async (collection) => {
-    const db = await connect();
-
-    var sala = await db.collection(collection).find().toArray();
-
-    console.log(sala);
-    return sala;
-}
-
-module.exports = { findAll };
+module.exports = { connect };
