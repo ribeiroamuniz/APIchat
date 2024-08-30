@@ -1,7 +1,7 @@
 {
   "name": "apinode",
   "version": "1.0.0",
-  "description": "api do chat feita em aula na parte dois",
+  "description": "api do chat feita em aula",
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/server.js",

@@ -1,23 +1,45 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ObjectId } = require('mongodb');
 
 let singleton;
 
 async function connect() {
-    if (singleton) return singleton;
+  if (singleton) return singleton;
 
-    const client = new MongoClient(process.env.DB_HOST, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
+  const client = new MongoClient(process.env.DB_HOST);
+  await client.connect();
 
-    await client.connect();
-    singleton = client.db(process.env.DB);
-    return singleton;
+  singleton = client.db(process.env.DB_DATABASE);
+  return singleton
 }
 
-module.exports = { connect };
+let findAll = async (collection) => {
+  const db = await connect();
+  return await db.collection(collection).find().toArray();
+}
+
+
+async function insertOne(collection, objeto) {
+  const db = await connect();
+  return db.collection(collection).insertOne(objeto);
+}
+
+let findOne = async (collection, _id) => {
+  const db = await connect();
+  let obj = await db.collection(collection).findOne({ '_id': new ObjectId(_id) });
+  return obj ? obj : false;
+}
+
+
+let updateOne = async (collection, object, param) => {
+  const db = await connect();
+  let result = await db.collection(collection).updateOne(param, { $set: object });
+  return result;
+}
+
+let deleteOne = async (collection, param) => {
+  const db = await connect();
+  console.log(param)
+  return await db.collection(collection).deleteOne({ '_id': new ObjectId(param) });
+};
+
+module.exports = {findAll, insertOne, findOne, updateOne, deleteOne}

@@ -3,6 +3,7 @@ const SECRET = "1234";
 const jwt = require('jsonwebtoken');
 const db = require("../model/db");
 const { ObjectId } = require('mongodb');
+const { listarMembros } = require("../model/salamodel");
 
 const listar = async (req, res) => {
   try {
@@ -117,7 +118,28 @@ const enviarmen = async (req, res) => {
   }
 };
 
-const sobre = async (req, res) => { res.json({ nome: "API-CHAT", versao: "0.1.0", "autor": "Manuela Silva" });}
+const listarMembrosSala = async (req, res) => {
+    try {
+        const { idSala } = req.query;
+
+        if (!idSala) {
+            return res.status(400).send('idSala é obrigatório.');
+        }
+
+        const membros = await listarMembros(idSala);
+
+        if (!membros) {
+            return res.status(404).send('Sala não encontrada ou sem membros.');
+        }
+
+        res.status(200).json(membros);
+    } catch (error) {
+        console.error('Erro ao listar membros:', error);
+        res.status(500).send('Erro interno do servidor.');
+    }
+};
+
+const sobre = async (req, res) => { res.json({ nome: "API-CHAT", versao: "0.1.0", "autor": "Angélica Muniz" });}
 
 
 module.exports = {
@@ -127,5 +149,6 @@ module.exports = {
   listarmen,
   enviarmen,
   criar, 
+  listarMembrosSala,
   sobre
 };

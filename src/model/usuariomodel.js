@@ -1,14 +1,19 @@
-const db = require("./db");
-
-async function registrarusuario(nick){
-    return await db.insertOne("usuario", {"nick": nick});
+const db = require('./db');
+async function registrarUsuario(nick) {
+  return await db.insertOne("usuario", { "nick": nick })
+}
+let buscarUsuario = async (idUser) => {
+  let user = await db.findOne("usuario", idUser);
+  return user;
 }
 
-async function removerUsuario(idUser){
-    const db = await connect();
-    return await db.collection("usuario").deleteOne({ "_id": ObjectId(idUser) });
+
+let alterarUsuario = async (user) => {
+  return await db.updateOne("usuario", user, { _id: user._id });
 }
 
-module.exports = {registrarusuario, removerUsuario}
+let removerUsuario = async (iduser) => {
+  return await db.deleteOne("usuario", iduser);
+};
 
-module.exports = {registrarusuario}
+module.exports = {registrarUsuario, buscarUsuario, alterarUsuario, removerUsuario};

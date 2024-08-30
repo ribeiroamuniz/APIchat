@@ -1,18 +1,18 @@
-const Usuario = require('../model/usuarioModel'); // Ajuste o caminho conforme necessário
+const token = require('../../util/token');
+const usuarioModel = require('../model/usuariomodel')
 
-async function entrar(nick) {
-    try {
-        const usuario = await Usuario.findOne({ nick }).exec();
-        if (usuario) {
-            return { sucesso: true, usuario };
-        } else {
-            return { sucesso: false, mensagem: 'Usuário não encontrado' };
+exports.entrar = async (nick) => {
+    let resp = await usuarioModel.registrarUsuario(nick)
+    if (resp.insertedId) {
+        return {
+            "IdUser": resp.insertedId,
+            "token": await token.setToken(JSON.stringify(resp.insertedId.toString()).replace(/"/g, ''), nick),
+            "nick": nick
         }
-    } catch (error) {
-        throw new Error(`Erro ao entrar: ${error.message}`);
     }
 }
 
-module.exports = {
-    entrar
-};
+exports.sairChat=async(iduser)=>{
+    let resp = await usuarioModel.removerUsuario(iduser)
+    return ("Saiu do chat")
+}
