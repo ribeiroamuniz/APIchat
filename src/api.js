@@ -40,7 +40,7 @@ router.post('/sala/criar', async (req, res) => {
     }
 });
 
-router.put('/sala/entrar', async (req, res) => {
+router.get('/sala/entrar', async (req, res) => {
     if (!await token.checktoken(req.headers.token, req.headers.iduser, req.headers.nick)){
         return res.status(400).send({ msg: "Usuário não autorizado" });
     }
